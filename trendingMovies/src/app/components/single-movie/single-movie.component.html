@@ -1,0 +1,6 @@
+<div *ngFor="let element of movies; let i = index" class = singleImage id = "singleImage{{i}}">
+    <span class = "release">Released on {{element.release_date}}</span>
+    <img src={{element.stars}} alt={{element.vote_average}} class = "rank">
+    <img (mouseover)="showOverview(i)" (mouseout)="hideOverview(i)" class = "coverImg" alt={{element.title}} src= {{element.poster_path}}>
+    <div class = "overview" id = "overview{{i}}">{{element.overview}}</div>
+</div>
