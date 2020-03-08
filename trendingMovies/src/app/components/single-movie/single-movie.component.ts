@@ -20,25 +20,35 @@ export class SingleMovieComponent implements OnInit {
 
   movies:any =[];
   moviesQuery:any =[];
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { 
+    this.api.listen().subscribe( _ => {
+        this.onFilter();
+    })
+}
+//update the movies array according to filter
+onFilter() {
+    this.movies = this.api.filterResults()
+}
 
   getMovies() {
     var moviesResultsArray=[];
     var moviesArray=[];
 
     let imgPrefix = "https://image.tmdb.org/t/p/w200";
+
     //retrieving data from 4 different pages. (can be more) in order to get enough data to sort later by popularity
     zip(this.api.getMovies("1"),this.api.getMovies("2"),this.api.getMovies("3"),this.api.getMovies("4")).subscribe(data => {
       for(var pageResults of data){
         moviesArray.push(pageResults["results"])
-
       }
         moviesResultsArray =[].concat.apply([], moviesArray);
+
         //sorting according to popularity in a descending order
         moviesResultsArray.sort(function(a, b){
           return b.popularity-a.popularity
       })
       var arrayOf60 = moviesResultsArray.slice(0,60)
+
       for(var top60 of arrayOf60){ 
           this.movies.push({
             vote_average:  Math.round(top60.vote_average)/2,
@@ -50,8 +60,9 @@ export class SingleMovieComponent implements OnInit {
             poster_path: imgPrefix+ top60.poster_path
           });
         }
+
         this.exportArray(this.movies)
-        
+
     });
 
   }
@@ -59,7 +70,6 @@ export class SingleMovieComponent implements OnInit {
   exportArray(movies:any){
     this.api.exportCalculatedData(movies)
   }
-
 
   ngOnInit() {
     this.getMovies()

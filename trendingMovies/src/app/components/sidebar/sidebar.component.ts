@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,EventEmitter, Output } from '@angular/core';
 import { ApiService } from '../../api.service';
 
 
@@ -8,15 +8,15 @@ import { ApiService } from '../../api.service';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
+  @Output() onFilter: EventEmitter<any> = new EventEmitter();
 
   constructor(private api: ApiService) { }
 
-  filterByName(){
-    let char = (<HTMLInputElement>document.getElementById("filterByName")).value; //casting
-    let filtered =this.api.filterResults(char)
-    console.log(filtered)
-
-  }
+    //get the user input and call to filter service
+     filterByName():void {
+         let char = (<HTMLInputElement>document.getElementById("filterByName")).value; //casting
+         this.api.filterEvent(char);
+     }
 
   ngOnInit() {
   }
